@@ -1,0 +1,29 @@
+# Conda environment specification for the public release.
+#
+# The scientific stack is listed under ``pip`` rather than under ``dependencies``
+# because conda's channels and PyPI do not always agree on the same build of the
+# same version, and the pins below are the exact artefacts the code was executed
+# against. Creating the environment with ``conda env create -f environment.yml``
+# therefore reproduces the same wheels as ``pip install -r requirements.txt``.
+#
+# numpy is held at 1.26.x on purpose; see the comment in requirements.txt.
+
+name: jrsp
+channels:
+  - conda-forge
+dependencies:
+  - python=3.12.7
+  - pip
+  - pip:
+      - numpy==1.26.4
+      - pandas==2.2.2
+      - scipy==1.12.0
+      - scikit-learn==1.6.1
+      - xgboost==3.4.1
+      - lightgbm==4.7.0
+      - catboost==1.2.10
+      - shap==0.51.0
+      - PyYAML==6.0.1
+      - pytest==7.4.4
+      # Optional; needs model weights that are not distributed with this repository.
+      - tabpfn==2.1.4

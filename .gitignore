@@ -1,0 +1,159 @@
+# .gitignore for the public release.
+#
+# The first section is the one that matters. It is written so that a mistake --
+# placing a real data file somewhere in the tree and running ``git add .`` -- does
+# not put it into the repository. Everything below it is ordinary hygiene.
+#
+# The rules below are anchored where they can be, so that a legitimate source file
+# is never excluded by accident. In particular nothing here excludes ``*.py``,
+# ``*.yaml``, ``*.csv`` under ``data/schema`` or ``data/synthetic``, or the
+# expected-output tables under ``examples/``. Those are intended content.
+
+# ---------------------------------------------------------------------------
+# Case-level and restricted data. Never commit any of these.
+# ---------------------------------------------------------------------------
+data/raw/
+data/raw_documents/
+data/judgments/
+data/private/
+data/restricted/
+# Case-level tables. Every CSV under data/ is excluded, and the two that are
+# intended content are re-included by name. A real case-level table would have to
+# be given one of those two names to be tracked, which is a deliberate and visible
+# act rather than an oversight.
+data/**/*.csv
+!data/synthetic/synthetic_cases.csv
+!data/schema/data_dictionary.csv
+# Judgment documents from which a case could be re-identified.
+*.docx
+*.doc
+*.wps
+*.rtf
+# Real prediction and feature dumps.
+*case_predictions*
+*unit_predictions*
+*test_predictions*
+timeseries_predictions*
+*real_shap*
+*real_feature_matrix*
+*meta_features.parquet
+*.parquet
+
+# ---------------------------------------------------------------------------
+# Generated artefacts. The repository ships the code that produces them, not the
+# outputs, except for the small tables under examples/ that document expected shape.
+# ---------------------------------------------------------------------------
+outputs/
+reports/
+experiments/
+logs/
+*.log
+.logs/
+# Anything written by a run into a scratch directory.
+tmp/
+scratch/
+scratch_*
+*_scratch/
+
+# ---------------------------------------------------------------------------
+# Fitted model artefacts. Weights and caches are not distributed.
+# ---------------------------------------------------------------------------
+*.pkl
+*.pickle
+*.joblib
+*.h5
+*.pt
+*.pth
+*.ckpt
+*.onnx
+*.safetensors
+*.bin
+*.model
+# Downloaded model caches.
+.cache/
+cache/
+*.cache
+model_cache/
+model_weights/
+pretrained/
+# TabPFN and Hugging Face caches.
+tabpfn*/
+models--*/
+hub/
+*.lock
+
+# ---------------------------------------------------------------------------
+# Secrets and credentials.
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+secrets.yaml
+secrets.yml
+credentials*
+*credential*.json
+*token*.txt
+.git-credentials
+.netrc
+# Local overrides of the path configuration.
+config/paths.yaml
+config/local.yaml
+config/*.local.yaml
+
+# ---------------------------------------------------------------------------
+# Local environments.
+# ---------------------------------------------------------------------------
+.venv/
+venv/
+env/
+ENV/
+virtualenv/
+conda-meta/
+*.egg-info/
+.eggs/
+dist/
+build/
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+
+# ---------------------------------------------------------------------------
+# IDE and editor state.
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.ropeproject/
+.spyproject/
+.spyderproject/
+# Notebook checkpoints. Executed notebooks would carry cell outputs, which can
+# contain path and data material, so the checkpoints are not tracked.
+.ipynb_checkpoints/
+
+# ---------------------------------------------------------------------------
+# Operating system clutter.
+# ---------------------------------------------------------------------------
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+desktop.ini
+$RECYCLE.BIN/

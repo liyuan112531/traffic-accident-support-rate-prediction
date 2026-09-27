@@ -1,0 +1,30 @@
+# Runtime dependencies of the public release.
+#
+# Versions are the ones the code was developed and executed against. They are
+# pinned because the numerical results of a tree-ensemble pipeline are sensitive to
+# library internals: LightGBM's split search, XGBoost's histogram builder and
+# scikit-learn's forest implementation have all changed behaviour across releases.
+#
+# numpy is deliberately held at 1.26.x. Several of the pinned libraries below were
+# built against the 1.x ABI, and moving to 2.x changes both the ABI and a number of
+# scalar-promotion rules. Do not upgrade it casually.
+
+numpy==1.26.4
+pandas==2.2.2
+scipy==1.12.0
+scikit-learn==1.6.1
+xgboost==3.4.1
+lightgbm==4.7.0
+catboost==1.2.10
+shap==0.51.0
+PyYAML==6.0.1
+
+# Test dependencies.
+pytest==7.4.4
+
+# Optional. The prior-data fitted network expert needs model weights that are
+# downloaded on first use; those weights are not distributed with this repository.
+# When the package or its weights are unavailable the expert is reported as
+# unavailable and skipped, and the meta representation narrows from 73 to 72
+# columns. Nothing else in the pipeline depends on it.
+tabpfn==2.1.4

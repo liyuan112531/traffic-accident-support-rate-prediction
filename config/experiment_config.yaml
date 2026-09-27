@@ -1,0 +1,189 @@
+# Experiment configuration for the public reference implementation.
+#
+# Which sections the code reads
+# -----------------------------
+# The code reads exactly one section of this file: ``demonstration``, through
+# ``src.utils.cli.demonstration_defaults``, which supplies the default scale of the
+# stage scripts.
+#
+# Every other section is a documentary mirror. The values in it are declared in the
+# code, which is where they are authoritative:
+#
+#   protocol                     : src.pipeline.PipelineConfig defaults
+#   min_meta_rows                : src.pipeline.MIN_META_ROWS
+#   min_expert_rows              : src.pipeline.MIN_EXPERT_ROWS
+#   experts.pool                 : src.experts.registry.FROZEN_POOL
+#   experts.hyperparameters      : src.experts.registry.SPECS
+#   meta_representation          : src.features.meta_features
+#   meta_learning.head           : src.meta_learning.meta_learner.META_HYPERPARAMETERS
+#   meta_learning.weighting      : src.meta_learning.item_balanced
+#   aggregation                  : src.aggregation.claim_weighted
+#   statistics                   : src.statistics.resampling, src.statistics.multiplicity
+#   interpretation               : src.interpretation.shap_analysis
+#   target                       : src.preprocessing.pipeline
+#
+# The mirror exists so that the configuration can be read in one place. It is not a
+# control surface, and that is deliberate: the pre-registered protocol should not be
+# changed by editing a file that ships with the release. The code asserts the
+# dimensional identities these values imply, so a drift between the mirror and the
+# code is caught by the test suite rather than silently tolerated.
+
+project:
+  name: judicial-support-rate
+  version: 1.0.0
+  description: >-
+    Reference implementation of item-decomposed support-rate prediction with an
+    expert ensemble, an item-balanced meta-learner, and claim-structure-driven
+    aggregation.
+
+target:
+  # Support rate per case-item unit. The case-level rate is derived, never stored.
+  item_level: "award_ij / claim_ij"
+  case_level: "award_total_i / claim_total_i"
+  domain: [0.0, 1.0]
+  structural_absence: "claim_ij == 0 -> undefined (NULL), never imputed"
+  behavioural_zero: "claim_ij > 0 and award_ij == 0 -> 0.0, an informative observation"
+
+dataset:
+  # The empirical corpus is not distributed with this repository. See
+  # docs/data_access.md and docs/privacy_and_data_policy.md.
+  empirical_corpus_distributed: false
+  synthetic_path: "data/synthetic/synthetic_cases.csv"
+  schema_path: "data/schema/data_dictionary.csv"
+
+protocol:
+  # Pre-registered protocol of the study.
+  cv:
+    unit: case                 # folds are assigned to cases, never to case-item units
+    n_outer_folds: 5
+    inner_folds: 3
+    seeds: [42, 2024, 3407]
+    shared_across_items_and_experts: true
+  nesting:
+    meta_training_inputs: "cross-fitted inside the training fold"
+    configuration_selection: "inner folds only; never the outer evaluation part"
+  min_meta_rows: 100           # a fold with fewer cross-fitted meta rows is rejected
+  min_expert_rows: 8           # an item with fewer training units is served by the
+                               # constant median expert and reported as a fallback
+
+experts:
+  pool:
+    # The frozen pool of the method: eleven experts. TabPFN is the only one that needs
+    # weights downloaded on first use, and those weights are not distributed with this
+    # repository, so a default run reaches ten of them and reports the skipped expert
+    # under experts_skipped. The two configurations this produces are the lightweight
+    # demonstration (10 experts, 72-dimensional meta representation) and the full paper
+    # configuration (11 experts, 73-dimensional, --with-tabpfn). See the README.
+    - median
+    - ridge
+    - rf
+    - xgb
+    - lgb
+    - catboost
+    - c3
+    - extratrees
+    - histgb
+    - svr_rbf
+    - tabpfn
+  c3_base_pool: [median, ridge, rf, xgb, lgb, catboost]
+  allow_external_weights: false
+  hyperparameters_are_preregistered: true
+  hyperparameter_search: none
+
+meta_representation:
+  # The identity that fixes the width of the meta input.
+  expert_predictions: 11
+  disagreement_features: 13
+  claim_side_features: 49
+  total: 73
+  claim_side_decomposition:
+    request_features: 33
+    item_indicators: 16
+  request_features_decomposition:
+    raw_claims: 16
+    claim_total: 1
+    log1p_claims: 16
+
+meta_learning:
+  weighting:
+    scheme: item_balanced
+    per_item_total_weight: 0.0625      # 1 / 16
+    formula: "w_ij = 1 / (J * n_j), rescaled so that sum(w) = N"
+    recomputed_per_fold: true
+    imputation: none
+  head:
+    learner: lightgbm
+    objective: regression_l1
+    label: Item-Balanced L1
+    hyperparameters:
+      n_estimators: 300
+      num_leaves: 15
+      learning_rate: 0.05
+      subsample: 0.9
+      subsample_freq: 1
+      colsample_bytree: 0.9
+      min_child_samples: 20
+      n_jobs: 1
+      verbose: -1
+  variants:
+    - name: Item-Balanced L1
+      weights: item_balanced
+      objective: regression_l1
+    - name: Item-Balanced L2
+      weights: item_balanced
+      objective: regression
+    - name: Pooled L1, uniform weights
+      weights: uniform
+      objective: regression_l1
+      note: attribution control that isolates the effect of item balancing
+    - name: Direct case-level L1
+      weights: uniform
+      objective: regression_l1
+      inputs: case-level request features only, no item decomposition
+
+aggregation:
+  # Deterministic re-expression of the case-level rate; no parameters are learned.
+  weight: "w_ij = claim_ij / sum_k claim_ik"
+  prediction: "R_hat_i = sum_j w_ij * r_hat_ij"
+  learnable_parameters: 0
+  clip_to_unit_interval: true
+
+statistics:
+  bootstrap:
+    unit: case
+    replicates: 10000
+    seed: 20260924
+    interval: percentile
+    alpha: 0.05
+  permutation:
+    scheme: "swap the two predictions per case-item unit"
+    replicates: 10000
+    seed: 20260925
+  multiplicity:
+    method: benjamini_hochberg
+    family: "all model comparisons on all metrics"
+
+interpretation:
+  method: TreeSHAP
+  scope: model behaviour
+  is_causal: false
+  is_calibrated_uncertainty: false
+
+demonstration:
+  # Deliberately reduced so a checkout can be exercised in about two to three
+  # minutes. Demonstration scale is not the protocol, and results from it are not
+  # comparable with any number reported in the manuscript.
+  label: "demonstration scale, not the study protocol"
+  max_cases: 200
+  n_outer_folds: 2
+  inner_folds: 2
+  seeds: [42]
+  bootstrap_replicates: 400
+  permutation_replicates: 400
+
+reproducibility:
+  seed_everything: true
+  deterministic_threads: true
+  note: >-
+    Thread counts are pinned to one so that floating-point reduction order does
+    not vary between machines. This trades speed for reproducibility.

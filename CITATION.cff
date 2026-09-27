@@ -1,0 +1,42 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the accompanying manuscript."
+title: "Predicting Judicial Support Rates in Traffic Accident Compensation"
+abstract: >-
+  Reference implementation of a claim-structure-driven hierarchical model for
+  predicting judicial support rates in traffic accident compensation. Sixteen
+  statutory compensation items are modelled separately by a pool of heterogeneous
+  experts; the resulting item-level rates are aggregated to the case level using
+  the case's own claimed amounts as weights, an aggregation that introduces no
+  learnable parameters. A meta-learner consumes the expert predictions, their
+  disagreement and the request side, and is trained with an item-balanced absolute
+  error objective. The repository distributes code, configuration, a data schema
+  and a synthetic demonstration dataset, but no judgment texts and no case-level
+  data.
+type: software
+# Version of the software in this repository, matching pyproject.toml and the
+# CHANGELOG. It is not a version of the manuscript.
+version: "1.0.0"
+date-released: "2026-09-27"
+repository-code: "https://github.com/liyuan112531/traffic-accident-support-rate-prediction"
+license: MIT
+keywords:
+  - judicial support rate
+  - traffic accident compensation
+  - hierarchical aggregation
+  - ensemble learning
+  - explainable machine learning
+  - legal analytics
+authors:
+  # Order follows the manuscript's author list. Liyuan Gu is the first author and
+  # Mingyue Miao is the corresponding author; Lihua Huang and Fangxia Zhao are
+  # co-authors. No ORCID identifier is listed because none was supplied, and no
+  # DOI is listed because none has been assigned. Both are deliberately absent
+  # rather than filled with a guess.
+  - family-names: Gu
+    given-names: Liyuan
+  - family-names: Miao
+    given-names: Mingyue
+  - family-names: Huang
+    given-names: Lihua
+  - family-names: Zhao
+    given-names: Fangxia

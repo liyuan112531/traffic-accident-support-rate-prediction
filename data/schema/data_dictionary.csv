@@ -1,0 +1,132 @@
+name,dtype,description,role,allowed_values_or_encoding,pre_judgment_information,used_in_expert_models,used_in_meta_learner,public_release_safe
+case_id,string,Synthetic case identifier of the form SYNTH-0001. Not derived from any real case or judgment number.,identifier,pattern SYNTH-nnnn,yes,no,no,yes
+doc_year,integer,"Year of the judgment, used only to define the temporal extrapolation split.",procedural context,2022 or 2023,yes,no,no,yes
+doc_region,string,Court region. Constant in the synthetic file.,procedural context,SYNTHETIC-REGION,yes,no,no,yes
+doc_proc_level,string,Instance of the proceeding.,procedural context,first instance,yes,no,no,yes
+injury_severity_synthetic,categorical,Illustrative ordinal severity label. Not used by any model in this repository: the manuscript excludes post-outcome case attributes of this class from every feature set. Included only to show the schema.,illustrative only,none | minor | moderate | severe | fatal,ambiguous,no,no,yes
+medical_claim,float,"Claimed amount for the medical head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+future_medical_claim,float,"Claimed amount for the future_medical head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+hospital_meal_claim,float,"Claimed amount for the hospital_meal head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+nutrition_claim,float,"Claimed amount for the nutrition head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+nursing_claim,float,"Claimed amount for the nursing head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+lost_income_claim,float,"Claimed amount for the lost_income head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+transport_claim,float,"Claimed amount for the transport head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+accommodation_claim,float,"Claimed amount for the accommodation head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+disability_comp_claim,float,"Claimed amount for the disability_comp head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+assistive_device_claim,float,"Claimed amount for the assistive_device head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+death_comp_claim,float,"Claimed amount for the death_comp head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+funeral_claim,float,"Claimed amount for the funeral head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+mental_solatium_claim,float,"Claimed amount for the mental_solatium head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+property_loss_claim,float,"Claimed amount for the property_loss head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+appraisal_claim,float,"Claimed amount for the appraisal head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+other_claim,float,"Claimed amount for the other head of claim, in yuan.",request side,>= 0; 0 means the item was not claimed,yes,yes,indirectly,yes
+medical_award,float,"Awarded amount for the medical head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+future_medical_award,float,"Awarded amount for the future_medical head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+hospital_meal_award,float,"Awarded amount for the hospital_meal head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+nutrition_award,float,"Awarded amount for the nutrition head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+nursing_award,float,"Awarded amount for the nursing head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+lost_income_award,float,"Awarded amount for the lost_income head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+transport_award,float,"Awarded amount for the transport head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+accommodation_award,float,"Awarded amount for the accommodation head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+disability_comp_award,float,"Awarded amount for the disability_comp head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+assistive_device_award,float,"Awarded amount for the assistive_device head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+death_comp_award,float,"Awarded amount for the death_comp head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+funeral_award,float,"Awarded amount for the funeral head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+mental_solatium_award,float,"Awarded amount for the mental_solatium head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+property_loss_award,float,"Awarded amount for the property_loss head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+appraisal_award,float,"Awarded amount for the appraisal head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+other_award,float,"Awarded amount for the other head of claim, in yuan.",outcome (target side),>= 0; <= <item>_claim,no,no,no,yes
+claim_total,float,Sum of the sixteen claimed amounts.,request side,> 0,yes,yes,indirectly,yes
+award_total,float,Sum of the sixteen awarded amounts.,outcome (target side),>= 0; <= claim_total,no,no,no,yes
+r_medical,float,"Item-level support rate medical_award / medical_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_future_medical,float,"Item-level support rate future_medical_award / future_medical_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_hospital_meal,float,"Item-level support rate hospital_meal_award / hospital_meal_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_nutrition,float,"Item-level support rate nutrition_award / nutrition_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_nursing,float,"Item-level support rate nursing_award / nursing_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_lost_income,float,"Item-level support rate lost_income_award / lost_income_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_transport,float,"Item-level support rate transport_award / transport_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_accommodation,float,"Item-level support rate accommodation_award / accommodation_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_disability_comp,float,"Item-level support rate disability_comp_award / disability_comp_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_assistive_device,float,"Item-level support rate assistive_device_award / assistive_device_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_death_comp,float,"Item-level support rate death_comp_award / death_comp_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_funeral,float,"Item-level support rate funeral_award / funeral_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_mental_solatium,float,"Item-level support rate mental_solatium_award / mental_solatium_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_property_loss,float,"Item-level support rate property_loss_award / property_loss_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_appraisal,float,"Item-level support rate appraisal_award / appraisal_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+r_other,float,"Item-level support rate other_award / other_claim. Undefined, encoded as NULL, when the item was not claimed.",target,"[0, 1] or NULL",no,no,no,yes
+total_support_rate,float,Case-level support rate award_total / claim_total.,target,"[0, 1]",no,no,no,yes
+w_<item>,float,Case-specific aggregation weight claim_<item> / claim_total. Zero for items that were not claimed.,aggregation weight,"[0, 1]; the sixteen weights sum to 1",yes,no,no,yes
+claim_0,float,Request-side feature: the medical claimed amount. This is the meta-matrix name for the column documented above as medical_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_1,float,Request-side feature: the future_medical claimed amount. This is the meta-matrix name for the column documented above as future_medical_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_2,float,Request-side feature: the hospital_meal claimed amount. This is the meta-matrix name for the column documented above as hospital_meal_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_3,float,Request-side feature: the nutrition claimed amount. This is the meta-matrix name for the column documented above as nutrition_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_4,float,Request-side feature: the nursing claimed amount. This is the meta-matrix name for the column documented above as nursing_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_5,float,Request-side feature: the lost_income claimed amount. This is the meta-matrix name for the column documented above as lost_income_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_6,float,Request-side feature: the transport claimed amount. This is the meta-matrix name for the column documented above as transport_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_7,float,Request-side feature: the accommodation claimed amount. This is the meta-matrix name for the column documented above as accommodation_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_8,float,Request-side feature: the disability_comp claimed amount. This is the meta-matrix name for the column documented above as disability_comp_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_9,float,Request-side feature: the assistive_device claimed amount. This is the meta-matrix name for the column documented above as assistive_device_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_10,float,Request-side feature: the death_comp claimed amount. This is the meta-matrix name for the column documented above as death_comp_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_11,float,Request-side feature: the funeral claimed amount. This is the meta-matrix name for the column documented above as funeral_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_12,float,Request-side feature: the mental_solatium claimed amount. This is the meta-matrix name for the column documented above as mental_solatium_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_13,float,Request-side feature: the property_loss claimed amount. This is the meta-matrix name for the column documented above as property_loss_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_14,float,Request-side feature: the appraisal claimed amount. This is the meta-matrix name for the column documented above as appraisal_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_15,float,Request-side feature: the other claimed amount. This is the meta-matrix name for the column documented above as other_claim.,"meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_16,float,"Request-side feature: claim_total, the sum of the sixteen claimed amounts.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_17,float,"Request-side feature: the log1p transform of the medical claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_18,float,"Request-side feature: the log1p transform of the future_medical claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_19,float,"Request-side feature: the log1p transform of the hospital_meal claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_20,float,"Request-side feature: the log1p transform of the nutrition claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_21,float,"Request-side feature: the log1p transform of the nursing claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_22,float,"Request-side feature: the log1p transform of the lost_income claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_23,float,"Request-side feature: the log1p transform of the transport claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_24,float,"Request-side feature: the log1p transform of the accommodation claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_25,float,"Request-side feature: the log1p transform of the disability_comp claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_26,float,"Request-side feature: the log1p transform of the assistive_device claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_27,float,"Request-side feature: the log1p transform of the death_comp claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_28,float,"Request-side feature: the log1p transform of the funeral claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_29,float,"Request-side feature: the log1p transform of the mental_solatium claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_30,float,"Request-side feature: the log1p transform of the property_loss claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_31,float,"Request-side feature: the log1p transform of the appraisal claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+claim_32,float,"Request-side feature: the log1p transform of the other claimed amount. The transform is monotone, so it adds no information beyond the raw amount; it changes the geometry the tree splits operate on.","meta input, claim-side block",>= 0,yes,yes,yes,yes
+item_medical,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_future_medical,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_hospital_meal,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_nutrition,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_nursing,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_lost_income,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_transport,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_accommodation,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_disability_comp,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_assistive_device,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_death_comp,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_funeral,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_mental_solatium,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_property_loss,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_appraisal,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+item_other,float,One-hot indicator of the item this case-item unit belongs to.,"meta input, claim-side block",0 or 1,yes,no,yes,yes
+diff_c3_lgb,float,"Signed difference between the anchor expert and a comparison expert. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[-1, 1]",yes,no,yes,yes
+diff_c3_xgb,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[-1, 1]",yes,no,yes,yes
+diff_c3_median,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[-1, 1]",yes,no,yes,yes
+pred_max,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+pred_min,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+pred_range,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+pred_std,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+agg_median,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+disagree_xgb_lgb,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+disagree_c3_catboost,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+disagree_c3_ridge,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+pred_mean_others_c3,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+n_experts,float,"Expert-disagreement summary statistic. Measures pool disagreement, not calibrated uncertainty.","meta input, disagreement block","[0, inf)",yes,no,yes,yes
+pred_median,float,Support-rate prediction of the median expert (baseline).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_ridge,float,Support-rate prediction of the ridge expert (linear).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_rf,float,Support-rate prediction of the rf expert (bagged trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_xgb,float,Support-rate prediction of the xgb expert (boosted trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_lgb,float,Support-rate prediction of the lgb expert (boosted trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_catboost,float,Support-rate prediction of the catboost expert (boosted trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_c3,float,Support-rate prediction of the c3 expert (combination).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_extratrees,float,Support-rate prediction of the extratrees expert (bagged trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_histgb,float,Support-rate prediction of the histgb expert (boosted trees).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_svr_rbf,float,Support-rate prediction of the svr_rbf expert (kernel).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+pred_tabpfn,float,Support-rate prediction of the tabpfn expert (prior-data fitted network).,"meta input, expert-prediction block","[0, 1]",yes,yes,yes,yes
+total_support_rate_prediction,float,Case-level support-rate prediction after claim-weighted aggregation of the item-level predictions.,output,"[0, 1]",no,no,yes,yes

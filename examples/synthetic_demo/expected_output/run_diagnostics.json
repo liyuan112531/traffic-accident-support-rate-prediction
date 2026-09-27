@@ -1,0 +1,211 @@
+{
+  "run_settings": {
+    "n_cases": 200,
+    "n_units": 1274,
+    "items": [
+      "medical",
+      "future_medical",
+      "hospital_meal",
+      "nutrition",
+      "nursing",
+      "lost_income",
+      "transport",
+      "accommodation",
+      "disability_comp",
+      "assistive_device",
+      "death_comp",
+      "funeral",
+      "mental_solatium",
+      "property_loss",
+      "appraisal",
+      "other"
+    ],
+    "experts": [
+      "median",
+      "ridge",
+      "rf",
+      "xgb",
+      "lgb",
+      "catboost",
+      "c3",
+      "extratrees",
+      "histgb",
+      "svr_rbf"
+    ],
+    "pool_size": 10,
+    "experts_skipped": {
+      "tabpfn": "requires pretrained weights that are not distributed with this repository; pass allow_external_weights=True to enable"
+    },
+    "meta_width": 72,
+    "meta_blocks": {
+      "expert_predictions": 10,
+      "disagreement": 13,
+      "claim_side": 49
+    },
+    "frozen_pool_meta_width": 73,
+    "run": {
+      "label": "demonstration scale, not the study protocol",
+      "outer_folds": 2,
+      "inner_folds": 2,
+      "seeds": [
+        42
+      ],
+      "min_meta_rows": 100,
+      "max_cases": 200
+    },
+    "uses_external_weights": false
+  },
+  "structure_check": {
+    "request_features": 33,
+    "request_features_is_33": true,
+    "item_indicators": 16,
+    "item_indicators_is_16": true,
+    "claim_side": 49,
+    "claim_side_is_49": true,
+    "disagreement": 13,
+    "disagreement_is_13": true,
+    "meta_width_for_pool": 72,
+    "block_boundaries_for_pool": {
+      "expert_predictions": [
+        0,
+        10
+      ],
+      "disagreement": [
+        10,
+        23
+      ],
+      "claim_side": [
+        23,
+        72
+      ]
+    },
+    "frozen_pool_width": 73,
+    "frozen_pool_width_is_73": true,
+    "frozen_pool_boundaries": {
+      "expert_predictions": [
+        0,
+        11
+      ],
+      "disagreement": [
+        11,
+        24
+      ],
+      "claim_side": [
+        24,
+        73
+      ]
+    },
+    "frozen_pool_boundaries_are_11_24_73": true
+  },
+  "weight_invariants": {
+    "folds_checked": 2,
+    "all_balanced": true,
+    "all_positive": true,
+    "min_item_total": 39.12499999999998,
+    "max_item_total": 40.50000000000001,
+    "min_item_share": 0.062499999999999965,
+    "max_item_share": 0.06250000000000003,
+    "ideal_item_share": 0.0625,
+    "min_mean_weight": 1.0,
+    "max_mean_weight": 1.0,
+    "max_deviation_from_ideal": 3.469446951953614e-17,
+    "max_deviation_from_ideal_share": 3.469446951953614e-17
+  },
+  "conservation_identity": {
+    "n_cases_checked": 200,
+    "n_cases_excluded": 0,
+    "max_abs_deviation": 3.3306690738754696e-16,
+    "mean_abs_deviation": 8.536574225281868e-17,
+    "exact_match_fraction": 0.35,
+    "within_1e-12_fraction": 1.0
+  },
+  "weight_concentration": {
+    "mean": 0.44530356923464937,
+    "median": 0.3937088530269552,
+    "min": 0.16329533761995235,
+    "max": 0.9825604799987412,
+    "n_cases": 200,
+    "uniform_reference": 0.0625,
+    "n_cases_single_item": 0
+  },
+  "inference": {
+    "bootstrap": [
+      {
+        "metric": "macro_MAE",
+        "delta_observed": 0.002136466389310754,
+        "bootstrap_mean": 0.0022688401277258814,
+        "bootstrap_sd": 0.0021175722407854487,
+        "ci_low": -0.0016772254460531765,
+        "ci_high": 0.006198197694232523,
+        "direction_probability": 0.1475,
+        "ci_crosses_zero": true,
+        "n_replicates": 400,
+        "n_cases": 200,
+        "n_items": 16,
+        "seed": 11
+      },
+      {
+        "metric": "macro_RMSE",
+        "delta_observed": -0.004185005979670198,
+        "bootstrap_mean": -0.0036935618024833395,
+        "bootstrap_sd": 0.002041697804325402,
+        "ci_low": -0.007435612273769027,
+        "ci_high": 0.0003888203381449981,
+        "direction_probability": 0.9575,
+        "ci_crosses_zero": true,
+        "n_replicates": 400,
+        "n_cases": 200,
+        "n_items": 16,
+        "seed": 11
+      },
+      {
+        "metric": "macro_R2",
+        "delta_observed": 0.03201196806884937,
+        "bootstrap_mean": 0.02344496978044278,
+        "bootstrap_sd": 0.021560637927902988,
+        "ci_low": -0.024955133678356712,
+        "ci_high": 0.06282334569247931,
+        "direction_probability": 0.88,
+        "ci_crosses_zero": true,
+        "n_replicates": 400,
+        "n_cases": 200,
+        "n_items": 16,
+        "seed": 11
+      }
+    ],
+    "permutation": [
+      {
+        "metric": "macro_MAE",
+        "delta_observed": 0.002136466389310754,
+        "permutation_mean": 0.00010716059831376891,
+        "permutation_sd": 0.002129041486847821,
+        "p_two_sided": 0.2942643391521197,
+        "p_one_sided_a_better": 0.8379052369077307,
+        "n_replicates": 400,
+        "seed": 12
+      },
+      {
+        "metric": "macro_RMSE",
+        "delta_observed": -0.004185005979670198,
+        "permutation_mean": 5.4247013380443743e-05,
+        "permutation_sd": 0.002167413556264001,
+        "p_two_sided": 0.06234413965087282,
+        "p_one_sided_a_better": 0.032418952618453865,
+        "n_replicates": 400,
+        "seed": 12
+      },
+      {
+        "metric": "macro_R2",
+        "delta_observed": 0.03201196806884937,
+        "permutation_mean": -0.00040784256587602085,
+        "permutation_sd": 0.017812744596825986,
+        "p_two_sided": 0.059850374064837904,
+        "p_one_sided_a_better": 0.02743142144638404,
+        "n_replicates": 400,
+        "seed": 12
+      }
+    ]
+  },
+  "elapsed_seconds": 149.42,
+  "disclaimer": "Produced from the synthetic demonstration dataset. These figures are not the results reported in the manuscript and are not comparable with them."
+}

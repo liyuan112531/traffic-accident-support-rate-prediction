@@ -1,0 +1,37 @@
+# Template for local path overrides.
+#
+# Copy this file to config/paths.yaml and edit as needed. config/paths.yaml is
+# ignored by git, because a local path is machine-specific and has no place in a
+# shared repository. The template itself is committed so the expected schema is
+# discoverable.
+#
+# Scope, stated exactly
+# ---------------------
+#   * Copying this file and editing it does not change what the stage scripts do.
+#     Every stage script takes --data and --output explicitly, and its defaults are
+#     fixed in src/utils/cli.py and are relative to the repository root. Pass the
+#     arguments if you want different locations; that is the supported route.
+#   * These keys are read by src.utils.paths.resolve, which is the helper to call if
+#     you are writing your own script against this package. Values are resolved
+#     relative to the repository root unless absolute, and any key may also be
+#     supplied through an environment variable named JRSP_<KEY>, which takes
+#     precedence over the file.
+#   * The values below are the same ones the scripts default to, so that this file
+#     cannot be mistaken for a second, divergent set of defaults.
+#
+# Keeping the schema documented is worth doing even though no entry point is wired to
+# it: it is the interface a caller of src.utils.paths.resolve relies on, and this file
+# is what load_paths() falls back to when config/paths.yaml does not exist.
+
+# Case table to run the pipeline on. The default is the synthetic demonstration file,
+# which is the only case-level data that ships with this repository.
+case_table: "data/synthetic/synthetic_cases.csv"
+
+# Directory where run artefacts are written, as the stage scripts default to it.
+# Created on demand.
+output_dir: "examples/synthetic_demo/expected_output"
+
+# Directory for cached model weights, if an optional expert needs them. TabPFN is the
+# only expert that downloads weights, and it is disabled unless --with-tabpfn is
+# passed, so this path is usually unused and the directory is not created.
+model_cache_dir: ".cache/model-weights"

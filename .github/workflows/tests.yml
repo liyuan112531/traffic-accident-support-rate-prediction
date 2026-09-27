@@ -1,0 +1,133 @@
+# Continuous integration for the public reference implementation.
+#
+# What this workflow is deliberately careful about
+# -----------------------------------------------
+#   * It installs the exact pins in requirements.txt and upgrades none of them. The
+#     numerical output of a tree-ensemble pipeline depends on library internals --
+#     LightGBM's split search, XGBoost's histogram builder, scikit-learn's forest -- so
+#     a newer numpy or LightGBM would make CI a different experiment from the one the
+#     repository documents. numpy in particular is held at 1.26.x.
+#   * It pins Python to 3.12.7, the version the code was developed and executed
+#     against, rather than tracking the newest interpreter available.
+#   * It does not install the optional TabPFN extra. TabPFN's pretrained weights are
+#     not distributed with this repository, it is disabled unless --with-tabpfn is
+#     passed, and neither the default pool nor the test fixtures include it. Installing
+#     it would pull the PyTorch stack into every run and cover nothing.
+#   * It checks the demonstration's own verification block rather than comparing its
+#     numbers against the committed expected output. The last decimal of a tree
+#     ensemble depends on the BLAS present, as the README explains; the demonstration
+#     proves the code runs, not that it reproduces a value.
+#
+# The two marker selections partition the suite exactly: 115 fast tests plus 20
+# end-to-end tests is the 135 of the full run.
+
+name: tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  # A newer push to the same branch makes an in-flight run redundant.
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+
+  unit-tests:
+    name: Unit tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install the pinned dependencies
+        run: |
+          # pip is packaging tooling, not a numerical dependency; upgrading it does not
+          # touch any of the pins below it.
+          python -m pip install --upgrade pip
+          # requirements.txt is the single source of truth. TabPFN is filtered out here
+          # rather than kept in a second, drifting file; see the header of this workflow.
+          grep -v -E '^[[:space:]]*tabpfn' requirements.txt > "${RUNNER_TEMP}/requirements-ci.txt" || true
+          python -m pip install -r "${RUNNER_TEMP}/requirements-ci.txt"
+
+      - name: Record the resolved versions
+        run: python -m pip list
+
+      - name: Run the fast tests
+        run: python -m pytest tests/ -q -m "not slow" -p no:cacheprovider
+
+  end-to-end:
+    name: End-to-end tests
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install the pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          grep -v -E '^[[:space:]]*tabpfn' requirements.txt > "${RUNNER_TEMP}/requirements-ci.txt" || true
+          python -m pip install -r "${RUNNER_TEMP}/requirements-ci.txt"
+
+      - name: Record the resolved versions
+        run: python -m pip list
+
+      - name: Run the end-to-end tests
+        run: python -m pytest tests/ -q -m "slow" -p no:cacheprovider
+
+  synthetic-demo:
+    name: Synthetic demonstration
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.12.7
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12.7"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install the pinned dependencies
+        run: |
+          python -m pip install --upgrade pip
+          grep -v -E '^[[:space:]]*tabpfn' requirements.txt > "${RUNNER_TEMP}/requirements-ci.txt" || true
+          python -m pip install -r "${RUNNER_TEMP}/requirements-ci.txt"
+
+      - name: Record the resolved versions
+        run: python -m pip list
+
+      - name: Run the demonstration and require its verification block to pass
+        shell: bash
+        run: |
+          # pipefail so a non-zero exit from the demonstration fails the step even
+          # though tee succeeds.
+          set -o pipefail
+          python scripts/run_synthetic_demo.py --output "${RUNNER_TEMP}/demo" 2>&1 \
+            | tee "${RUNNER_TEMP}/demo.log"
+          # The script already exits non-zero if any check fails; this asserts the
+          # reported verdict as well, so a silent change of the block cannot pass.
+          grep -Eq "overall +: +PASS" "${RUNNER_TEMP}/demo.log"
